@@ -1,30 +1,21 @@
 _schema-version: '1.0'
-repository: <your-container-registry>
+repository: sapcloudplatform-artifactory.apple.com/btp-kyma
 tag: latest
 before-all:
-  - npx cds build --production
+  - npx cds build --production ## cds build  (db & srv)
+  - npm --prefix app/kyma-demo install ## html5 npm
+  - npm --prefix app/kyma-demo run build:kyma  ## html5 build for kyma
+  - cp app/kyma-demo/xs-app.json app/html5-deployer/resources/kymademo/ ## copy approuter xs-app.json to html5-deployer
 modules:
-  - name: new-srv
+  - name: kyma-sample-demo-srv
     build-parameters:
-      buildpack:
-        type: nodejs
-        builder: builder-jammy-base
-        path: gen/srv
-        env:
-          BP_NODE_RUN_SCRIPTS: ""
-  - name: new-hana-deployer
+      dockerfile: srv/Dockerfile
+  - name: kyma-sample-demo-approuter
     build-parameters:
-      buildpack:
-        type: nodejs
-        builder: builder-jammy-base
-        path: gen/db
-        env:
-          BP_NODE_RUN_SCRIPTS: ""
-  - name: new-approuter
+      dockerfile: app/router/Dockerfile
+  - name: kyma-sample-demo-hana-deployer
     build-parameters:
-      buildpack:
-        type: nodejs
-        builder: builder-jammy-base
-        path: app/router
-        env:
-          BP_NODE_RUN_SCRIPTS: ""
+      dockerfile: db/Dockerfile
+  - name: kyma-sample-demo-html5-deployer
+    build-parameters:
+      dockerfile: app/html5-deployer/Dockerfile
