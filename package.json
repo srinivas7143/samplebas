@@ -7,6 +7,7 @@
   "private": true,
   "dependencies": {
     "@sap/cds": "^8",
+    "@sap/cds-dk": "^8",
     "express": "^4",
     "@sap/xssec": "^4",
     "@cap-js/hana": "^1"
@@ -17,11 +18,20 @@
   },
   "scripts": {
     "start": "cds-serve",
-    "watch-project1": "cds watch --open project1/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-kyma-demo": "cds watch --open kyma-demo/webapp/index.html?sap-ui-xx-viewCache=false",
+    "start-kyma": "npx cds run --production"
   },
   "cds": {
     "requires": {
-      "auth": "xsuaa",
+      "[production]": {
+        "auth": "xsuaa",
+        "db": "hana"
+      },
+      "[development]": {
+        "auth": {
+          "kind": "mocked"
+        }
+      },
       "destinations": true,
       "html5-repo": true
     },
